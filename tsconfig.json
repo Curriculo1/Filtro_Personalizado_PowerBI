@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES2017",
     "module": "commonjs",
     "moduleResolution": "node",
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": false,
-    "noImplicitAny": false,
-    "strict": false,
+    "noImplicitAny": true,
+    "strict": true,
     "types": ["powerbi-visuals-api"]
   },
   "files": ["src/visual.ts"],

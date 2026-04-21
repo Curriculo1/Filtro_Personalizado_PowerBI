@@ -4,15 +4,15 @@
     "displayName": "Filtro Personalizado",
     "guid": "customSlicer302010",
     "visualClassName": "Visual",
-    "version": "1.0.0.0",
-    "description": "Custom slicer visual built in TypeScript",
-    "supportUrl": "https://www.linkedin.com/in/adrianodesa/",
-    "gitHubUrl": "https://example.com/repo"
+    "version": "1.0.0",
+    "description": "Custom slicer visual built in TypeScript with advanced search, multi-select, and keyboard navigation capabilities for Power BI reports.",
+    "supportUrl": "https://github.com/adrianosa/custom-slicer-powerbi",
+    "gitHubUrl": "https://github.com/adrianosa/custom-slicer-powerbi"
   },
   "apiVersion": "5.1.0",
   "author": {
     "name": "Adriano de Sá",
-    "email": "analista@example.com"
+    "email": "adriano.sa@empresa.com.br"
   },
   "assets": {
     "icon": "assets/icon.png"
