@@ -83,6 +83,16 @@
             }
           }
         },
+        "searchLabelColor": {
+          "displayName": "Cor da label de busca",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
         "hoverOpacity": {
           "displayName": "Opacidade do hover",
           "type": {
