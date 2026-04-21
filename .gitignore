@@ -1,0 +1,18 @@
+```
+# Build artifacts and distributions
+dist/
+.tmp/
+*.pbiviz
+*.html
+
+# Dependencies
+node_modules/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Editors
+.vscode/
+.idea/
+```
