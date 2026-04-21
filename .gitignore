@@ -1,18 +1,9 @@
 ```
-# Build artifacts and distributions
+# Build artifacts
 dist/
-.tmp/
+build/
 *.pbiviz
-*.html
 
-# Dependencies
-node_modules/
-
-# Logs and temp files
-*.log
-*.tmp
-
-# Editors
-.vscode/
-.idea/
+# Temporary files
+.tmp/
 ```
