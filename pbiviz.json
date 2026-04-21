@@ -1,0 +1,24 @@
+{
+  "visual": {
+    "name": "customSlicer",
+    "displayName": "Filtro Personalizado",
+    "guid": "customSlicer302010",
+    "visualClassName": "Visual",
+    "version": "1.0.0.0",
+    "description": "Custom slicer visual built in TypeScript",
+    "supportUrl": "https://www.linkedin.com/in/adrianodesa/",
+    "gitHubUrl": "https://example.com/repo"
+  },
+  "apiVersion": "5.1.0",
+  "author": {
+    "name": "Adriano de Sá",
+    "email": "analista@example.com"
+  },
+  "assets": {
+    "icon": "assets/icon.png"
+  },
+  "externalJS": [],
+  "style": "style/visual.less",
+  "capabilities": "capabilities.json",
+  "dependencies": "dependencies.json"
+}

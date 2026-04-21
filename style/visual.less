@@ -1,0 +1,296 @@
+@surface: #ffffff;
+@surface-soft: #f7f9fc;
+@text: #1f2937;
+@text-muted: #6b7280;
+@border: #d7deea;
+@border-strong: #c6d0e0;
+@shadow-soft: rgba(15, 23, 42, 0.08);
+@shadow-deep: rgba(15, 23, 42, 0.14);
+
+.slicer-root {
+  position: relative;
+  width: 100%;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 12px;
+  color: @text;
+  --focus-border-color: #7aa7ff;
+  --focus-ring-color: rgba(122, 167, 255, 0.25);
+  --hover-bg-color: #eef3fb;
+  --search-font-family: "Segoe UI", Arial, sans-serif;
+  --dropdown-font-family: "Segoe UI", Arial, sans-serif;
+  --input-height: 36px;
+  --input-border-width: 1px;
+  --input-border-radius: 8px;
+}
+
+.slicer-root.no-search-icon .slicer-search-icon {
+  display: none;
+}
+
+.slicer-root.has-value .slicer-input-shell {
+  border-color: @border-strong;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.025);
+}
+
+.slicer-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 25px;
+  height: var(--input-height);
+  padding: 0 10px;
+  border-style: solid;
+  border-color: @border;
+  border-width: var(--input-border-width);
+  border-radius: var(--input-border-radius);
+  background: @surface;
+  font-family: var(--search-font-family);
+  box-shadow: 0 1px 2px @shadow-soft;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease, border-width 120ms ease, border-radius 120ms ease, height 120ms ease;
+}
+
+.slicer-input-shell:focus-within {
+  border-color: var(--focus-border-color);
+  box-shadow: 0 0 0 1px var(--focus-ring-color), 0 4px 10px rgba(15, 23, 42, 0.03);
+}
+
+.slicer-search-icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border: 2px solid #94a3b8;
+  border-radius: 50%;
+  position: relative;
+  box-sizing: border-box;
+  transition: opacity 120ms ease;
+}
+
+.slicer-search-icon::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 2px;
+  right: -4px;
+  bottom: -2px;
+  border-radius: 999px;
+  background: #94a3b8;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.slicer-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: @text;
+  font: inherit;
+}
+
+.slicer-input::placeholder {
+  color: #94a3b8;
+}
+
+.slicer-clear-button,
+.slicer-clear-filter {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: @text-muted;
+  transition: color 120ms ease, background-color 120ms ease, opacity 120ms ease;
+}
+
+.slicer-clear-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.slicer-clear-button.visible,
+.slicer-clear-filter.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.slicer-clear-button:hover,
+.slicer-clear-filter:hover {
+  color: @text;
+  background: @surface-soft;
+}
+
+.slicer-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border: 1px solid @border;
+  border-radius: 10px;
+  background: @surface;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  z-index: 10;
+}
+
+.slicer-dropdown.hidden {
+  display: none;
+}
+
+.slicer-list {
+  max-height: 260px;
+  overflow: auto;
+  padding: 4px;
+  background: @surface;
+  font-family: var(--dropdown-font-family);
+  scrollbar-width: thin;
+  scrollbar-color: #c9d4e5 transparent;
+}
+
+.slicer-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.slicer-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slicer-list::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: #c9d4e5;
+  background-clip: padding-box;
+}
+
+.slicer-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 30px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  color: @text;
+  transition: background-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.slicer-item + .slicer-item {
+  margin-top: 0;
+}
+
+.slicer-item-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.slicer-item-checkbox {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border-radius: 50%;
+  border: 1px solid #94a3b8;
+  background: #fff;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.slicer-item-checkbox.checked {
+  border-color: var(--focus-border-color);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.slicer-item-checkbox.checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--focus-border-color);
+  transform: translate(-50%, -50%);
+}
+
+.slicer-item-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slicer-item-meta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.slicer-item-check {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #38527a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.slicer-item.active {
+  background: var(--hover-bg-color);
+  box-shadow: inset 0 0 0 1px rgba(122, 167, 255, 0.18);
+}
+
+.slicer-item.active .slicer-item-label {
+  font-weight: 600;
+}
+
+.slicer-item.mouse-active {
+  background: var(--hover-bg-color);
+  padding: 4px 7px;
+}
+
+.slicer-root.keyboard-nav-active .slicer-item.keyboard-active {
+  background: var(--hover-bg-color);
+  box-shadow: inset 0 0 0 1px var(--focus-border-color);
+  padding: 4px 7px;
+}
+
+.slicer-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 14px;
+  text-align: center;
+}
+
+.slicer-empty-title {
+  color: @text;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.slicer-empty-hint {
+  max-width: 240px;
+  color: @text-muted;
+  font-size: 11px;
+  line-height: 1.45;
+}

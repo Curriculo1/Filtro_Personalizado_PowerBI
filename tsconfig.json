@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "declaration": false,
+    "noImplicitAny": false,
+    "strict": false,
+    "types": ["powerbi-visuals-api"]
+  },
+  "files": ["src/visual.ts"],
+  "include": ["src/**/*.ts"]
+}

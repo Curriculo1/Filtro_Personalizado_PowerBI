@@ -1,0 +1,119 @@
+{
+  "privileges": [],
+  "supportsSynchronizingFilterState": true,
+  "objects": {
+    "general": {
+      "displayName": "Geral",
+      "properties": {
+        "fontSize": {
+          "displayName": "Tamanho da fonte",
+          "type": {
+            "numeric": true
+          }
+        },
+        "inputHeight": {
+          "displayName": "Altura do campo",
+          "type": {
+            "numeric": true
+          }
+        },
+        "inputBorderWidth": {
+          "displayName": "Espessura da borda",
+          "type": {
+            "numeric": true
+          }
+        },
+        "inputBorderRadius": {
+          "displayName": "Raio dos cantos",
+          "type": {
+            "numeric": true
+          }
+        },
+        "allowMultiSelect": {
+          "displayName": "Permitir multisseleção",
+          "type": {
+            "bool": true
+          }
+        },
+        "showSearchIcon": {
+          "displayName": "Mostrar lupa",
+          "type": {
+            "bool": true
+          }
+        },
+        "searchPlaceholder": {
+          "displayName": "Texto da busca",
+          "type": {
+            "text": true
+          }
+        },
+        "searchFontFamily": {
+          "displayName": "Fonte da busca",
+          "type": {
+            "formatting": {
+              "fontFamily": true
+            }
+          }
+        },
+        "dropdownFontFamily": {
+          "displayName": "Fonte do dropdown",
+          "type": {
+            "formatting": {
+              "fontFamily": true
+            }
+          }
+        },
+        "focusBorderColor": {
+          "displayName": "Cor do contorno (foco)",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "hoverColor": {
+          "displayName": "Cor do hover",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "hoverOpacity": {
+          "displayName": "Opacidade do hover",
+          "type": {
+            "numeric": true
+          }
+        },
+        "filter": {
+          "filterState": true,
+          "type": {
+            "filter": true
+          }
+        }
+      }
+    }
+  },
+  "dataRoles": [
+    {
+      "name": "category",
+      "kind": "Grouping",
+      "displayName": "Categoria"
+    }
+  ],
+  "dataViewMappings": [
+    {
+      "categorical": {
+        "categories": {
+          "for": {
+            "in": "category"
+          }
+        }
+      }
+    }
+  ]
+}

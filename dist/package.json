@@ -1,0 +1,17 @@
+{
+		"version": "1.0.0.0",
+		"author": {"name":"Adriano de Sá","email":"analista@example.com"},
+		"resources": [
+			{
+				"resourceId": "rId0",
+				"sourceType": 5,
+				"file": "resources/customSlicer302010.pbiviz.json"
+			}
+		],
+		"visual": {"name":"customSlicer","displayName":"Filtro Personalizado","guid":"customSlicer302010","visualClassName":"Visual","version":"1.0.0.0","description":"Custom slicer visual built in TypeScript","supportUrl":"https://www.linkedin.com/in/adrianodesa/","gitHubUrl":"https://example.com/repo"},
+		"metadata": {
+			"pbivizjson": {
+				"resourceId": "rId0"
+			}
+		}
+	}

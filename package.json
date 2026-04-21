@@ -1,0 +1,11 @@
+{
+  "name": "custom-slicer",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "pbiviz.cmd package",
+    "start": "pbiviz.cmd start"
+  },
+  "dependencies": {
+    "powerbi-visuals-api": "~5.1.0"
+  }
+}
