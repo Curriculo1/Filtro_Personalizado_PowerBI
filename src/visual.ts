@@ -35,6 +35,7 @@ export class Visual implements IVisual {
     private focusBorderColor: string = "#7aa7ff";
     private hoverColor: string = "#eef3fb";
     private hoverOpacityPct: number = 100;
+    private searchLabelColor: string = "#1f2937";
     private inputHeightPx: number = 36;
     private inputBorderWidthPx: number = 1;
     private inputBorderRadiusPx: number = 8;
@@ -999,6 +1000,13 @@ export class Visual implements IVisual {
             100
         );
 
+        this.searchLabelColor = Visual.getColorValue(
+            dataView.metadata?.objects,
+            "general",
+            "searchLabelColor",
+            "#1f2937"
+        );
+
         const hoverAlpha = Math.max(0, Math.min(100, this.hoverOpacityPct)) / 100;
         const inputHeight = Math.max(25, this.inputHeightPx);
         const inputBorderWidth = Math.max(0, this.inputBorderWidthPx);
@@ -1010,6 +1018,7 @@ export class Visual implements IVisual {
         this.root.style.setProperty("--focus-border-color", this.focusBorderColor);
         this.root.style.setProperty("--focus-ring-color", this.toRgba(this.focusBorderColor, 0.25));
         this.root.style.setProperty("--hover-bg-color", this.toRgba(this.hoverColor, hoverAlpha));
+        this.root.style.setProperty("--search-label-color", this.searchLabelColor);
         this.root.style.setProperty("--input-height", `${inputHeight}px`);
         this.root.style.setProperty("--input-border-width", `${inputBorderWidth}px`);
         this.root.style.setProperty("--input-border-radius", `${inputBorderRadius}px`);
@@ -1053,6 +1062,11 @@ export class Visual implements IVisual {
                         hoverColor: {
                             solid: {
                                 color: this.hoverColor
+                            }
+                        },
+                        searchLabelColor: {
+                            solid: {
+                                color: this.searchLabelColor
                             }
                         },
                         hoverOpacity: this.hoverOpacityPct
@@ -1252,6 +1266,23 @@ export class Visual implements IVisual {
             }
         };
 
+        const searchLabelColorSlice: FormattingSlice = {
+            uid: "general_searchLabelColor",
+            displayName: "Cor da label de busca",
+            control: {
+                type: FormattingComponent.ColorPicker,
+                properties: {
+                    descriptor: {
+                        objectName: "general",
+                        propertyName: "searchLabelColor"
+                    },
+                    value: {
+                        value: this.searchLabelColor
+                    }
+                }
+            }
+        };
+
         const hoverOpacitySlice: FormattingSlice = {
             uid: "general_hoverOpacity",
             displayName: "Opacidade do hover",
@@ -1286,6 +1317,7 @@ export class Visual implements IVisual {
                 dropdownFontFamilySlice,
                 focusBorderColorSlice,
                 hoverColorSlice,
+                searchLabelColorSlice,
                 hoverOpacitySlice
             ]
         };

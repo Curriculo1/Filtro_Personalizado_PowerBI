@@ -1,0 +1,9 @@
+```
+# Build artifacts
+dist/
+build/
+*.pbiviz
+
+# Temporary files
+.tmp/
+```
