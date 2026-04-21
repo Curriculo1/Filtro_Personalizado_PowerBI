@@ -2,6 +2,7 @@ import powerbi from "powerbi-visuals-api";
 import "../style/visual.less";
 
 import IVisual = powerbi.extensibility.IVisual;
+import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
@@ -17,7 +18,7 @@ import ValidatorType = powerbi.visuals.ValidatorType;
 import FormattingComponent = powerbi.visuals.FormattingComponent;
 
 export class Visual implements IVisual {
-    private host: any;
+    private host: IVisualHost;
     private root: HTMLElement;
     private inputShell: HTMLElement;
     private searchIcon: HTMLElement;
@@ -375,48 +376,60 @@ export class Visual implements IVisual {
     }
 
     private applyJsonFilterToHost(filter: any | null, action: powerbi.FilterAction): void {
-        this.host.applyJsonFilter(filter, "general", "filter", action);
+        try {
+            this.host.applyJsonFilter(filter, "general", "filter", action);
+        } catch (error) {
+            console.error("[CustomSlicer] Error applying filter:", error);
+        }
     }
 
     private applyCategoryFilter(values: unknown[]): void {
-        const target = this.getCategoryFilterTarget();
-        if (!target) {
-            return;
-        }
+        try {
+            const target = this.getCategoryFilterTarget();
+            if (!target) {
+                return;
+            }
 
-        const uniqueValues: unknown[] = [];
-        for (let i = 0; i < values.length; i++) {
-            let alreadyIncluded = false;
-            for (let j = 0; j < uniqueValues.length; j++) {
-                if (uniqueValues[j] === values[i]) {
-                    alreadyIncluded = true;
-                    break;
+            const uniqueValues: unknown[] = [];
+            for (let i = 0; i < values.length; i++) {
+                let alreadyIncluded = false;
+                for (let j = 0; j < uniqueValues.length; j++) {
+                    if (uniqueValues[j] === values[i]) {
+                        alreadyIncluded = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyIncluded) {
+                    uniqueValues.push(values[i]);
                 }
             }
 
-            if (!alreadyIncluded) {
-                uniqueValues.push(values[i]);
+            if (uniqueValues.length === 0) {
+                this.clearCategoryFilter();
+                return;
             }
+
+            const filter = {
+                $schema: "https://powerbi.com/product/schema#basic",
+                target,
+                operator: "In",
+                values: uniqueValues,
+                filterType: 1
+            };
+
+            this.applyJsonFilterToHost(filter, powerbi.FilterAction.merge);
+        } catch (error) {
+            console.error("[CustomSlicer] Error applying category filter:", error);
         }
-
-        if (uniqueValues.length === 0) {
-            this.clearCategoryFilter();
-            return;
-        }
-
-        const filter = {
-            $schema: "https://powerbi.com/product/schema#basic",
-            target,
-            operator: "In",
-            values: uniqueValues,
-            filterType: 1
-        };
-
-        this.applyJsonFilterToHost(filter, powerbi.FilterAction.merge);
     }
 
     private clearCategoryFilter(): void {
-        this.applyJsonFilterToHost(null, powerbi.FilterAction.remove);
+        try {
+            this.applyJsonFilterToHost(null, powerbi.FilterAction.remove);
+        } catch (error) {
+            console.error("[CustomSlicer] Error clearing category filter:", error);
+        }
     }
 
     private getOwnCategoryFilter(options: VisualUpdateOptions): any | null {
@@ -576,15 +589,19 @@ export class Visual implements IVisual {
     }
 
     private onSearchInput(): void {
-        const query = this.input.value;
-        this.setInputText(query);
-        this.highlightedVisibleIndex = -1;
-        this.hoveredVisibleIndex = -1;
-        this.setKeyboardNavigationActive(false);
-        this.openDropdown();
-        this.renderList(query);
-        if (!this.allowMultiSelect) {
-            this.scheduleApplyQuery(query);
+        try {
+            const query = this.input.value;
+            this.setInputText(query);
+            this.highlightedVisibleIndex = -1;
+            this.hoveredVisibleIndex = -1;
+            this.setKeyboardNavigationActive(false);
+            this.openDropdown();
+            this.renderList(query);
+            if (!this.allowMultiSelect) {
+                this.scheduleApplyQuery(query);
+            }
+        } catch (error) {
+            console.error("[CustomSlicer] Error in search input:", error);
         }
     }
 
@@ -701,89 +718,102 @@ export class Visual implements IVisual {
     }
 
     private scheduleApplyQuery(queryRaw: string): void {
-        const query = queryRaw.trim();
-        if (this.debounceHandle !== null) {
-            window.clearTimeout(this.debounceHandle);
+        try {
+            const query = queryRaw.trim();
+            if (this.debounceHandle !== null) {
+                window.clearTimeout(this.debounceHandle);
+            }
+            this.debounceHandle = window.setTimeout(() => {
+                this.debounceHandle = null;
+                this.applyQuery(query);
+            }, this.debounceMs);
+        } catch (error) {
+            console.error("[CustomSlicer] Error scheduling query:", error);
         }
-        this.debounceHandle = window.setTimeout(() => {
-            this.debounceHandle = null;
-            this.applyQuery(query);
-        }, this.debounceMs);
     }
 
     private applyQuery(query: string): void {
-        if (!this.categoryCol) return;
-        if (query === this.lastQueryApplied) return;
-        this.lastQueryApplied = query;
+        try {
+            if (!this.categoryCol) return;
+            if (query === this.lastQueryApplied) return;
+            this.lastQueryApplied = query;
 
-        if (query.length === 0) {
-            if (this.allowMultiSelect && this.selectedValues.length > 0) {
+            if (query.length === 0) {
+                if (this.allowMultiSelect && this.selectedValues.length > 0) {
+                    return;
+                }
+
+                this.selectedIndex = null;
+                this.selectedExactText = "";
+                this.selectedValues = [];
+                this.clearCategoryFilter();
+                this.setInputText("");
                 return;
             }
 
-            this.selectedIndex = null;
-            this.selectedExactText = "";
-            this.selectedValues = [];
-            this.clearCategoryFilter();
-            this.setInputText("");
-            return;
-        }
+            const q = query.toLocaleLowerCase();
+            const matchingCategoryValues: unknown[] = [];
 
-        const q = query.toLocaleLowerCase();
-        const matchingCategoryValues: unknown[] = [];
-
-        for (let i = 0; i < this.categoryText.length; i++) {
-            if (this.categoryText[i].indexOf(q) !== -1) {
-                matchingCategoryValues.push(this.categoryCol.values[i]);
-                if (matchingCategoryValues.length >= this.maxMatchesToSelect) break;
-            }
-        }
-
-        if (matchingCategoryValues.length === 0) {
-            // Sem matches: mantém o estado atual do relatório.
-            return;
-        }
-
-        // Filtro real no host para responder a slicers/botoes nativos do Power BI.
-        this.selectedIndex = null;
-        this.selectedExactText = "";
-        this.selectedValues = [];
-        this.applyCategoryFilter(matchingCategoryValues);
-    }
-
-    private applyEnterQuery(queryRaw: string): boolean {
-        if (!this.categoryCol) return true;
-
-        if (this.debounceHandle !== null) {
-            window.clearTimeout(this.debounceHandle);
-            this.debounceHandle = null;
-        }
-
-        const query = queryRaw.trim();
-        if (query.length === 0) {
-            this.selectedIndex = null;
-            this.selectedExactText = "";
-            this.selectedValues = [];
-            this.clearCategoryFilter();
-            this.lastQueryApplied = "";
-            this.setInputText("");
-            return true;
-        }
-
-        if (this.allowMultiSelect) {
             for (let i = 0; i < this.categoryText.length; i++) {
-                if (this.categoryText[i].indexOf(query.toLocaleLowerCase()) !== -1) {
-                    this.toggleMultiSelectedValue(i);
-                    return false;
+                if (this.categoryText[i].indexOf(q) !== -1) {
+                    matchingCategoryValues.push(this.categoryCol.values[i]);
+                    if (matchingCategoryValues.length >= this.maxMatchesToSelect) break;
                 }
             }
 
-            return false;
-        }
+            if (matchingCategoryValues.length === 0) {
+                // Sem matches: mantém o estado atual do relatório.
+                return;
+            }
 
-        this.setInputText(queryRaw);
-        this.applyQuery(query);
-        return true;
+            // Filtro real no host para responder a slicers/botoes nativos do Power BI.
+            this.selectedIndex = null;
+            this.selectedExactText = "";
+            this.selectedValues = [];
+            this.applyCategoryFilter(matchingCategoryValues);
+        } catch (error) {
+            console.error("[CustomSlicer] Error applying query:", error);
+        }
+    }
+
+    private applyEnterQuery(queryRaw: string): boolean {
+        try {
+            if (!this.categoryCol) return true;
+
+            if (this.debounceHandle !== null) {
+                window.clearTimeout(this.debounceHandle);
+                this.debounceHandle = null;
+            }
+
+            const query = queryRaw.trim();
+            if (query.length === 0) {
+                this.selectedIndex = null;
+                this.selectedExactText = "";
+                this.selectedValues = [];
+                this.clearCategoryFilter();
+                this.lastQueryApplied = "";
+                this.setInputText("");
+                return true;
+            }
+
+            if (this.allowMultiSelect) {
+                for (let i = 0; i < this.categoryText.length; i++) {
+                    if (this.categoryText[i].indexOf(query.toLocaleLowerCase()) !== -1) {
+                        this.toggleMultiSelectedValue(i);
+                        return false;
+                    }
+                }
+
+                return false;
+            }
+
+            this.setInputText(queryRaw);
+            this.applyQuery(query);
+            return true;
+        } catch (error) {
+            console.error("[CustomSlicer] Error applying Enter query:", error);
+            return true;
+        }
     }
 
     private renderList(queryRaw: string): void {
